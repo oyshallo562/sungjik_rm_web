@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Number Generator</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+    #container {
+        margin-top: 5%;
+    }
+</style>
+</head>
+<body>
+
+<div id="container" class="container">
+    <h2 class="center-align">Random Number Generator</h2>
+    <div class="row">
+        <form id="numberForm" class="col s12">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="startNumber" type="number" class="validate" required>
+                    <label for="startNumber">시작 숫자</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="endNumber" type="number" class="validate" required>
+                    <label for="endNumber">끝 숫자</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="excludeNumbers" type="text" class="validate">
+                    <label for="excludeNumbers">제외할 숫자 (쉼표로 구분)</label>
+                </div>
+            </div>
+            <div class="center-align">
+                <button class="btn waves-effect waves-light" type="submit" name="action">랜덤 숫자 생성
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div id="result" class="col s12 center-align"></div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems, {});
+    });
+
+    document.getElementById('numberForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var startNumber = parseInt(document.getElementById('startNumber').value);
+        var endNumber = parseInt(document.getElementById('endNumber').value);
+        var excludeNumbers = document.getElementById('excludeNumbers').value.split(',').map(function(item) {
+            return parseInt(item.trim());
+        });
+        
+        if (startNumber >= endNumber) {
+            M.toast({html: '끝 숫자는 시작 숫자보다 커야 합니다.'});
+            return;
+        }
+        
+        var availableNumbers = [];
+        for (var i = startNumber; i <= endNumber; i++) {
+            if (!excludeNumbers.includes(i)) {
+                availableNumbers.push(i);
+            }
+        }
+        
+        if (availableNumbers.length === 0) {
+            M.toast({html: '제외할 숫자들이 범위 내에 모두 포함되어 랜덤 숫자를 생성할 수 없습니다.'});
+            return;
+        }
+        
+        var randomNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+        document.getElementById('result').innerHTML = '<h4>랜덤 숫자: ' + randomNumber + '</h4>';
+    });
+</script>
+
+</body>
+</html>
